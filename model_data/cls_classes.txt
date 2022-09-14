@@ -1,0 +1,4 @@
+Car
+Truk
+Tire
+Pedestrian
