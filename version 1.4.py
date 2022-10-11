@@ -30,7 +30,7 @@ class Main():
         self.text_queue = queue.Queue()
 
 
-        canvas_root = tk.Canvas(self.win, width=1280, height=720)
+        #canvas_root = tk.Canvas(self.win, width=1280, height=720)
         #im_root = self.get_image("car 1.png", 1280, 720)
         #canvas_root.create_image(640, 360, image=im_root)
         #canvas_root.pack()
@@ -301,7 +301,7 @@ class Main():
             print('rangMax:' + str(rangMax))
             print('rangInc:' + str(rangInc))
             # set exposure time in the range
-            exposTime = ueye.double(rangMin + 10)  # any value you want in the range
+            exposTime = ueye.double(rangMin + 100)  # any value you want in the range
             print('ExposTime:' + str(exposTime))
             ueye.is_Exposure(self.hCam0, ueye.IS_EXPOSURE_CMD_SET_EXPOSURE, exposTime, ueye.sizeof(exposTime))
             # set diaplay mode
@@ -415,7 +415,7 @@ class Main():
         print('rangMax:' + str(rangMax))
         print('rangInc:' + str(rangInc))
         # set exposure time in the range
-        exposTime = ueye.double(rangMin + 10)  # any value you want in the range
+        exposTime = ueye.double(rangMin + 100)  # any value you want in the range
         print('ExposTime:' + str(exposTime))
         ueye.is_Exposure(hCam, ueye.IS_EXPOSURE_CMD_SET_EXPOSURE, exposTime, ueye.sizeof(exposTime))
 
@@ -572,7 +572,7 @@ class Main():
                 print('rangMax:' + str(rangMax))
                 print('rangInc:' + str(rangInc))
                 # set exposure time in the range
-                exposTime = ueye.double(rangMin + 10)  # any value you want in the range
+                exposTime = ueye.double(rangMin + 60)  # any value you want in the range
                 print('ExposTime:' + str(exposTime))
                 ueye.is_Exposure(self.hCam0, ueye.IS_EXPOSURE_CMD_SET_EXPOSURE, exposTime, ueye.sizeof(exposTime))
                 # set diaplay mode
@@ -657,7 +657,7 @@ class Main():
                                 # print("fps= %.2f" % (fps))
                                 frame = cv2.putText(frame, "fps= %.2f" % (fps*2), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                                     (0, 255, 0), 2)
-                                pilImage = Image.fromarray(frame)
+                                pilImage = Image.fromarray(frame[:,:,::-1])
                                 pilImage = pilImage.resize((480, 300), Image.ANTIALIAS)
                                 tkimage = ImageTk.PhotoImage(pilImage)
                                 self.canvas1.create_image(0, 0, anchor='nw', image=tkimage)
@@ -684,7 +684,7 @@ class Main():
                 print('rangMax:' + str(rangMax))
                 print('rangInc:' + str(rangInc))
                 # set exposure time in the range
-                exposTime = ueye.double(rangMin + 10)  # any value you want in the range
+                exposTime = ueye.double(rangMin + 60)  # any value you want in the range
                 print('ExposTime:' + str(exposTime))
                 ueye.is_Exposure(self.hCam1, ueye.IS_EXPOSURE_CMD_SET_EXPOSURE, exposTime, ueye.sizeof(exposTime))
                 # set diaplay mode
@@ -767,7 +767,7 @@ class Main():
                                 # print("fps= %.2f" % (fps))
                                 frame = cv2.putText(frame, "fps= %.2f" % (fps), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1,
                                                     (0, 255, 0), 2)
-                                pilImage = Image.fromarray(frame)
+                                pilImage = Image.fromarray(frame[:,:,::-1])
                                 pilImage = pilImage.resize((480, 300), Image.ANTIALIAS)
                                 tkimage = ImageTk.PhotoImage(pilImage)
                                 self.canvas2.create_image(0, 0, anchor='nw', image=tkimage)
