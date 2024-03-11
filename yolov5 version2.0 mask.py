@@ -876,7 +876,7 @@ class Main():
                                                         line_thickness=2)
                                     else:
                                         res.clear()
-                                        self.r.hset("REAR", "LEFT INFO", str(res))
+                                        self.r.hset("REAR", "RIGHT INFO", str(res))
                                 self.text_queue.put('\n')
                                 fps = (fps + (1. / (time.time() - t1))) / 2
                             self.order = self.r.hget("Communication", "Order")
