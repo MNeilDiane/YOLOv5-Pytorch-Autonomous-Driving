@@ -20,6 +20,9 @@ from models.experimental import attempt_load
 from utils.general import check_img_size, non_max_suppression, scale_coords
 from utils.datasets import letterbox
 from utils.plots import plot_one_box
+
+
+
 class Main():
 
     def __init__(self):
@@ -29,22 +32,22 @@ class Main():
         self.mem_id = ueye.int()  # MEM_ID
         self.attitude = 0
         self.win = tk.Tk()
-        self.win.title('自动驾驶目标检测系统 YOLOv5')
-        self.win.geometry('1280x720')
+        self.win.title('侧后方目标检测系统')
+        self.win.geometry('1280x500')
         self.win.resizable(False, False)
         self.winisvisible = 1
         self.stop = False
         self.x = 0
         self.y = 150
         self.text_queue = queue.Queue()
-        self.hl1 = 5.2 / 10  # 监测区域高度距离图片顶部比例
-        self.wl1 = 0.5 / 10  # 监测区域高度距离图片左部比例
-        self.hl2 = 4.9 / 10  # 监测区域高度距离图片顶部比例
-        self.wl2 = 4.1 / 10  # 监测区域高度距离图片左部比例
-        self.hl3 = 9.6 / 10  # 监测区域高度距离图片顶部比例
-        self.wl3 = 9.5 / 10  # 监测区域高度距离图片左部比例
-        self.hl4 = 9.5 / 10  # 监测区域高度距离图片顶部比例
-        self.wl4 = 0.4 / 10  # 监测区域高度距离图片左部比例
+        self.hl1 = 4.0 / 10  # 监测区域高度距离图片顶部比例
+        self.wl1 = 5.0 / 10  # 监测区域高度距离图片左部比例
+        self.hl2 = 3.0 / 10  # 监测区域高度距离图片顶部比例
+        self.wl2 = 8.0 / 10  # 监测区域高度距离图片左部比例
+        self.hl3 = 8.0 / 10  # 监测区域高度距离图片顶部比例
+        self.wl3 = 8.0 / 10  # 监测区域高度距离图片左部比例
+        self.hl4 = 8.0 / 10  # 监测区域高度距离图片顶部比例
+        self.wl4 = 3.0 / 10  # 监测区域高度距离图片左部比例
         parser = argparse.ArgumentParser()
         parser.add_argument('--weights', nargs='+', type=str,
                             default='yolov5s.pt', help='model.pt path(s)')
@@ -127,73 +130,71 @@ class Main():
         self.integer = tk.StringVar()
         self.integer.set('Received Message')
 
-
-        #Buttons
-        #im_button0 = self.get_image('7.png', 160, 100)
+        # Buttons
+        # im_button0 = self.get_image('7.png', 160, 100)
         self.Button0 = tk.Button(self.win, text='System Activate',
-                            font=('Time New Roman', 12), bg='light blue',
-                            fg='white', relief=RAISED, command=lambda:self.System_Activate())
+                                 font=('Time New Roman', 12), bg='white',
+                                 fg='black', relief=RAISED, command=lambda: self.System_Activate())
         self.Button0.place(x=3, y=3, width=160, height=60)
-        #im_button1 = self.get_image('8.png', 160, 100)
+        # im_button1 = self.get_image('8.png', 160, 100)
 
-        #im_button3 = self.get_image('10.png', 160, 100)
-        self.Button3 = tk.Button(self.win, text='Crop image',
-                            font=('Time New Roman', 12,),
-                            bg='light blue', fg='white',
-                            relief=RAISED, command=lambda: self.fps_test())
+        # im_button3 = self.get_image('10.png', 160, 100)
+        self.Button3 = tk.Button(self.win, text='FPS Test',
+                                 font=('Time New Roman', 12,),
+                                 bg='white', fg='black',
+                                 relief=RAISED, command=lambda: self.fps_test())
         self.Button3.place(x=180, y=3, width=160, height=60)
-        #im_button4 = self.get_image('11.png', 160, 100)
-        self.Button4 = tk.Button(self.win, text='Visible',font=('Time New Roman', 12),
-                                 bg='light blue', fg='white',relief=RAISED, command=lambda:self.visible())
+        # im_button4 = self.get_image('11.png', 160, 100)
+        self.Button4 = tk.Button(self.win, text='Visible', font=('Time New Roman', 12),
+                                 bg='white', fg='black', relief=RAISED, command=lambda: self.visible())
         self.Button4.place(x=350, y=3, width=160, height=60)
-        #im_button5 = self.get_image('12.png', 160, 100)
+        # im_button5 = self.get_image('12.png', 160, 100)
         self.Button5 = tk.Button(self.win, text='Exit',
-                                 font=('Time New Roman', 12), bg='light blue',
-                                 fg='red', width=10, height=3, relief=RAISED,
+                                 font=('Time New Roman', 12), bg='white',
+                                 fg='black', width=10, height=3, relief=RAISED,
                                  command=lambda: self.exit())
         self.Button5.place(x=520, y=3, width=160, height=60)
 
         self.Button6 = tk.Button(self.win, text='Shutdown',
-                                 font=('Time New Roman', 12), bg='light blue',
-                                 fg='yellow', width=10, height=3, relief=RAISED,
+                                 font=('Time New Roman', 12), bg='white',
+                                 fg='black', width=10, height=3, relief=RAISED,
                                  command=lambda: self.shutdown()
                                  )
         self.Button6.place(x=430, y=100, width=100, height=50)
 
-        #Labels
-        #im_label1 =self.get_image('8.png', 330, 80)
+        # Labels
+        # im_label1 =self.get_image('8.png', 330, 80)
         self.label1 = tk.Label(self.win, text='Detection Infomation:',
-                             font=('Time New Roman', 12), bg='light blue', fg='white')
-        self.label1.place(x=960, y=0, width=320, height=40)
+                               font=('Time New Roman', 12), bg='white', fg='black')
+        self.label1.place(x=1000, y=0, width=280, height=40)
 
-        #Entrys
+        # Entrys
         self.Entry3 = tk.Entry(self.win, textvariable=self.integer, justify='center', font=('Time New Roman', 12),
-                              bg='#c0c0c0', fg='#99ff66')
+                               bg='#c0c0c0', fg='#99ff66')
         self.Entry3.place(x=690, y=3, width=200, height=60)
 
         # Text
         self.text1 = tk.Text(self.win, bg='#c0c0c0', wrap=WORD)
-        self.text1.place(x=960, y=40, width=320, height=680)
+        self.text1.place(x=1000, y=40, width=280, height=450)
 
-        #Checkbuttons
+        # Checkbuttons
         self.Checkbutton1 = tk.Checkbutton(self.win, text='LEFT',
-                                           font=('Time New Roman', 12), bg='light blue',
-                                           fg='yellow', activeforeground='red',
+                                           font=('Time New Roman', 12), bg='white',
+                                           fg='black', activeforeground='red',
                                            relief=RAISED, command=lambda: self.Video_left_Detection())
         self.Checkbutton1.place(x=190, y=100, width=100, height=50)
         # im_button2 = self.get_image('9.png', 160, 100)
         self.Checkbutton2 = tk.Checkbutton(self.win, text='Right',
-                                           font=('Time New Roman', 12), bg='light blue',
-                                           fg='yellow', activeforeground='red',
+                                           font=('Time New Roman', 12), bg='white',
+                                           fg='black', activeforeground='red',
                                            relief=RAISED, command=lambda: self.Video_right_Detection())
         self.Checkbutton2.place(x=670, y=100, width=100, height=50)
 
-        #Canvas
-        self.canvas1 = tk.Canvas(self.win, bg='grey', width=480, height=300)
+        # Canvas
+        self.canvas1 = tk.Canvas(self.win, bg='white', width=480, height=300)
         self.canvas1.place(x=self.x, y=self.y)
-        self.canvas2 = tk.Canvas(self.win, bg='grey', width=480, height=300)
-        self.canvas2.place(x=self.x+480, y=self.y)
-
+        self.canvas2 = tk.Canvas(self.win, bg='white', width=480, height=300)
+        self.canvas2.place(x=self.x + 480, y=self.y)
         self.win.mainloop()
 
 
@@ -369,8 +370,8 @@ class Main():
                         showimg = cv2.putText(showimg, "fps= %.2f" % (fps * 2), (0, 40),
                                               cv2.FONT_HERSHEY_SIMPLEX, 1,
                                               (0, 255, 0), 2)
-                        pilImage = Image.fromarray(showimg)
-                        pilImage = pilImage.resize((480, 300), Image.ANTIALIAS)
+                        pilImage = Image.fromarray(showimg[:, :, ::-1])
+                        pilImage = pilImage.resize((480, 300), Image.Resampling.LANCZOS)
                         tkimage = ImageTk.PhotoImage(pilImage)
                         self.canvas1.create_image(0, 0, anchor='nw', image=tkimage)
                         self.update()
@@ -510,8 +511,8 @@ class Main():
                         showimg = cv2.putText(showimg, "fps= %.2f" % (fps * 2), (0, 40),
                                               cv2.FONT_HERSHEY_SIMPLEX, 1,
                                               (0, 255, 0), 2)
-                        pilImage = Image.fromarray(showimg)
-                        pilImage = pilImage.resize((480, 300), Image.ANTIALIAS)
+                        pilImage = Image.fromarray(showimg[:, :, ::-1])
+                        pilImage = pilImage.resize((480, 300), Image.Resampling.LANCZOS)
                         tkimage = ImageTk.PhotoImage(pilImage)
                         self.canvas2.create_image(0, 0, anchor='nw', image=tkimage)
                         self.update()
@@ -644,15 +645,20 @@ class Main():
                             array = ueye.get_data(self.mem_ptr, rect_aoi.s32Width.value, rect_aoi.s32Height.value, nbpp,
                                                   +rect_aoi.s32Width.value * int((nbpp + 7) / 8), True)
                             frame = np.reshape(array, (rect_aoi.s32Height.value, rect_aoi.s32Width.value, 3))
+                            print(frame.shape)
                             frame = cv2.flip(frame, 0)
                             print(type(frame))
-                            showimg = frame
+                            #frame = frame[300:1280, 300:1000]
+                            #showimg = frame
                             #mask
+
                             with torch.no_grad():
                                 img = letterbox(frame, new_shape=self.opt.img_size)[0]
                                 # Convert
                                 # BGR to RGB, to 3x416x416
                                 img = np.ascontiguousarray(img)
+                                print(img.shape[1])
+                                print(img.shape[2])
                                 mask = np.zeros([img.shape[1], img.shape[2]], dtype=np.uint8)
                                 # mask[round(img.shape[1] * hl1):img.shape[1], round(img.shape[2] * wl1):img.shape[2]] = 255
                                 pts = np.array(
@@ -666,8 +672,10 @@ class Main():
                                 img = cv2.add(img, np.zeros(np.shape(img), dtype=np.uint8), mask=mask)
                                 img = torch.from_numpy(img).to(self.device)
                                 img = img.permute(1, 2, 0)
+                                print(img.shape)
                                 img = img.half() if self.half else img.float()  # uint8 to fp16/32
                                 img /= 255.0  # 0 - 255 to 0.0 - 1.0
+
                                 if img.ndimension() == 3:
                                     img = img.unsqueeze(0)
                                 # Inference
@@ -679,13 +687,14 @@ class Main():
                                                            agnostic=self.opt.agnostic_nms)
 
                                 # Process detections
+                                res = []
                                 for i, det in enumerate(pred):  # detections per image
                                     if det is not None and len(det):
-                                        res = []
-                                        self.r.hset("REAR", "LEFT INFO", str(res))
+
+                                        self.r.hset("REAR", "LEFT INFO", "no object")
                                         # Rescale boxes from img_size to im0 size
                                         det[:, :4] = scale_coords(
-                                            img.shape[2:], det[:, :4], showimg.shape).round()
+                                            img.shape[2:], det[:, :4], frame.shape).round()
                                         # Write results
                                         for *xyxy, conf, cls in reversed(det):
                                             if self.names[int(cls)]=='person' or self.names[int(cls)]=='car' or self.names[int(cls)]=='truck':
@@ -696,8 +705,13 @@ class Main():
                                                 name_list.append(self.names[int(cls)])
                                                 print(label)
                                                 plot_one_box(
-                                                    xyxy, showimg, label=label, color=self.colors[int(cls)],
+                                                    xyxy, frame, label=label, color=self.colors[int(cls)],
                                                     line_thickness=2)
+                                    else:
+                                        res.clear()
+                                        self.r.hset("REAR", "LEFT INFO", str(res))
+
+
                                 self.text_queue.put('\n')
                             fps = (fps + (1. / (time.time() - t1))) / 2
                             self.order = self.r.hget("Communication", "Order")
@@ -706,20 +720,22 @@ class Main():
                                 mem_ptr = None
                                 ueye.is_ExitCamera(self.hCam0)
                                 break
-                            #show result
-                            showimg = cv2.putText(showimg, "fps= %.2f" % (fps * 2), (0, 40),
+
+                            showimg = cv2.putText(frame, "fps= %.2f" % (fps * 2), (0, 40),
                                                   cv2.FONT_HERSHEY_SIMPLEX, 1,
                                                   (0, 255, 0), 2)
-                            showimg = cv2.polylines(showimg, [pts], isClosed=True, color=(255, 125, 125), thickness=2)
-                            pilImage = Image.fromarray(showimg[:,:,::-1])
+                            #showimg = cv2.polylines(showimg, [pts], isClosed=True, color=(0, 0, 255), thickness=2)
+                            pilImage = Image.fromarray(showimg[:, :, ::-1])
                             pilImage = pilImage.resize((480, 300), Image.Resampling.LANCZOS)
                             tkimage = ImageTk.PhotoImage(pilImage)
                             self.canvas1.create_image(0, 0, anchor='nw', image=tkimage)
                             self.update()
 
             if self.order == b'-1':
+
                 # Starts the driver and establishes the connection to the camera
                 self.hCam1=ueye.HIDS(1)
+
                 ret = ueye.is_InitCamera(self.hCam1, None)
                 if ret != ueye.IS_SUCCESS:
                     print('init camera failed')
@@ -747,6 +763,7 @@ class Main():
                 # set color mode
                 # ret = ueye.is_SetColorMode(hCam, ueye.IS_CM_BGR8_PACKED)
                 nbpp = 24  # bits of per pixel. this value is associated with the color mode
+
                 # get image size
                 rect_aoi = ueye.IS_RECT()
                 # Can be used to set the size and position of an "area of interest"(AOI) within an image
@@ -797,25 +814,15 @@ class Main():
                             frame = np.reshape(array, (rect_aoi.s32Height.value, rect_aoi.s32Width.value, 3))
                             frame = cv2.flip(frame, 0)
                             #frame = frame[300:1280, 920:1620]
-                            showimg = frame
+                            #showimg = frame
                             # mask
-                            mask = np.zeros([frame.shape[1], frame.shape[2]], dtype=np.uint8)
-                            # mask[round(img.shape[1] * hl1):img.shape[1], round(img.shape[2] * wl1):img.shape[2]] = 255
-                            pts = np.array([[int(frame.shape[2] * self.wl1), int(frame.shape[1] * self.hl1)],  # pts1
-                                            [int(frame.shape[2] * self.wl2), int(frame.shape[1] * self.hl2)],  # pts2
-                                            [int(frame.shape[2] * self.wl3), int(frame.shape[1] * self.hl3)],  # pts3
-                                            [int(frame.shape[2] * self.wl4), int(frame.shape[1] * self.hl4)]], np.int32)
-
-                            mask = cv2.fillPoly(mask, [pts], (255, 255, 255))
-                            frame = frame.transpose((1, 2, 0))
-                            frame = cv2.add(frame, np.zeros(np.shape(frame), dtype=np.uint8), mask=mask)
 
                             with torch.no_grad():
                                 img = letterbox(frame, new_shape=self.opt.img_size)[0]
                                 # Convert
                                 # BGR to RGB, to 3x416x416
-                                img = img[:, :, ::-1].transpose(2, 0, 1)
                                 img = np.ascontiguousarray(img)
+                                print(img.shape)
                                 mask = np.zeros([img.shape[1], img.shape[2]], dtype=np.uint8)
                                 # mask[round(img.shape[1] * hl1):img.shape[1], round(img.shape[2] * wl1):img.shape[2]] = 255
                                 pts = np.array(
@@ -823,16 +830,21 @@ class Main():
                                      [int(img.shape[2] * self.wl2), int(img.shape[1] * self.hl2)],  # pts2
                                      [int(img.shape[2] * self.wl3), int(img.shape[1] * self.hl3)],  # pts3
                                      [int(img.shape[2] * self.wl4), int(img.shape[1] * self.hl4)]], np.int32)
+
                                 mask = cv2.fillPoly(mask, [pts], (255, 255, 255))
                                 img = img.transpose((1, 2, 0))
                                 img = cv2.add(img, np.zeros(np.shape(img), dtype=np.uint8), mask=mask)
                                 img = torch.from_numpy(img).to(self.device)
                                 img = img.permute(1, 2, 0)
+                                print(img.shape)
                                 img = img.half() if self.half else img.float()  # uint8 to fp16/32
                                 img /= 255.0  # 0 - 255 to 0.0 - 1.0
+
                                 if img.ndimension() == 3:
                                     img = img.unsqueeze(0)
                                 # Inference
+
+                                print(img.shape)
                                 pred = self.model(img, augment=self.opt.augment)[0]
 
                                 # Apply NMS
@@ -840,14 +852,16 @@ class Main():
                                                            classes=self.opt.classes,
                                                            agnostic=self.opt.agnostic_nms)
 
+
                                 # Process detections
+                                res = []
                                 for i, det in enumerate(pred):  # detections per image
                                     if det is not None and len(det):
-                                        res = []
+
                                         self.r.hset("REAR", "RIGHT INFO", str(res))
                                         # Rescale boxes from img_size to im0 size
                                         det[:, :4] = scale_coords(
-                                            img.shape[2:], det[:, :4], showimg.shape).round()
+                                            img.shape[2:], det[:, :4], frame.shape).round()
                                         # Write results
                                         for *xyxy, conf, cls in reversed(det):
                                             if self.names[int(cls)] == 'person' or self.names[int(cls)] == 'car' or self.names[int(cls)] == 'truck':
@@ -858,8 +872,11 @@ class Main():
                                                     name_list.append(self.names[int(cls)])
                                                     print(label)
                                                     plot_one_box(
-                                                        xyxy, showimg, label=label, color=self.colors[int(cls)],
+                                                        xyxy, frame, label=label, color=self.colors[int(cls)],
                                                         line_thickness=2)
+                                    else:
+                                        res.clear()
+                                        self.r.hset("REAR", "LEFT INFO", str(res))
                                 self.text_queue.put('\n')
                                 fps = (fps + (1. / (time.time() - t1))) / 2
                             self.order = self.r.hget("Communication", "Order")
@@ -868,11 +885,13 @@ class Main():
                                 mem_ptr = None
                                 ueye.is_ExitCamera(self.hCam1)
                                 break
-                            showimg = cv2.putText(showimg, "fps= %.2f" % (fps * 2), (0, 40),
+
+
+                            showimg = cv2.putText(frame, "fps= %.2f" % (fps * 2), (0, 40),
                                                   cv2.FONT_HERSHEY_SIMPLEX, 1,
                                                   (0, 255, 0), 2)
-                            showimg = cv2.polylines(showimg, [pts], isClosed=True, color=(255, 125, 125), thickness=2)
-                            pilImage = Image.fromarray(showimg[:,:,::-1])
+                            #showimg = cv2.polylines(showimg, [pts], isClosed=True, color=(255, 125, 125), thickness=2)
+                            pilImage = Image.fromarray(showimg[:, :, ::-1])
                             pilImage = pilImage.resize((480, 300), Image.Resampling.LANCZOS)
                             tkimage = ImageTk.PhotoImage(pilImage)
                             self.canvas2.create_image(0, 0, anchor='nw', image=tkimage)
@@ -880,6 +899,8 @@ class Main():
 
             else:
                 break
+
+
 
 
 
